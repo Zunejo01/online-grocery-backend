@@ -1,4 +1,4 @@
-package com.ecommerce;
+package com.grocery.ordering.model;
 
 public class Customer {
     private int customerId;
@@ -7,15 +7,28 @@ public class Customer {
     private String password;
     private String address;
     private String contactNumber;
+    private String status; // For soft delete
+
+    public Customer() {
+    }
+
+    public Customer(int customerId, String customerName, String email, String password, String address, String contactNumber, String status) {
+        this.customerId = customerId;
+        this.setCustomerName(customerName);
+        this.setEmail(email);
+        this.setPassword(password);
+        this.setAddress(address);
+        this.setContactNumber(contactNumber);
+        this.setStatus(status);
+    }
 
     public Customer(String customerName, String email, String password, String address, String contactNumber) {
-        validateInputs(customerName, email, password, address, contactNumber);
-        this.customerId = generateCustomerId();
-        this.customerName = customerName;
-        this.email = email;
-        this.password = password;
-        this.address = address;
-        this.contactNumber = contactNumber;
+        this.setCustomerName(customerName);
+        this.setEmail(email);
+        this.setPassword(password);
+        this.setAddress(address);
+        this.setContactNumber(contactNumber);
+        this.status = "Active";
     }
 
     private void validateInputs(String customerName, String email, String password, String address, String contactNumber) {
@@ -45,16 +58,19 @@ public class Customer {
         return customerId;
     }
 
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
     public String getCustomerName() {
         return customerName;
     }
 
     public void setCustomerName(String customerName) {
-        if (customerName != null && customerName.length() <= 50) {
-            this.customerName = customerName;
-        } else {
-            throw new IllegalArgumentException("Customer name must not be null and should be maximum 50 characters");
+        if (customerName == null || customerName.trim().isEmpty() || customerName.length() > 50 || !customerName.matches("[a-zA-Z ]+")) {
+            throw new IllegalArgumentException("Customer Name must have alphabets only, not be null/empty, and be maximum 50 characters");
         }
+        this.customerName = customerName;
     }
 
     public String getEmail() {
@@ -62,12 +78,10 @@ public class Customer {
     }
 
     public void setEmail(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-        if (email != null && email.matches(emailRegex)) {
-            this.email = email;
-        } else {
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             throw new IllegalArgumentException("Invalid email format");
         }
+        this.email = email;
     }
 
     public String getPassword() {
@@ -75,11 +89,10 @@ public class Customer {
     }
 
     public void setPassword(String password) {
-        if (password != null && password.length() >= 6 && password.length() <= 12) {
-            this.password = password;
-        } else {
-            throw new IllegalArgumentException("Password must be between 6 and 12 characters");
+        if (password == null || password.length() < 5 || !password.matches(".*[A-Z].*") || !password.matches(".*[0-9].*") || !password.matches(".*[!@#$%^&*()].*")) {
+            throw new IllegalArgumentException("Password's length must not be less than 5 character and it must be a combination of atleast one uppercase alphabet,  one number and one special character.");
         }
+        this.password = password;
     }
 
     public String getAddress() {
@@ -87,11 +100,10 @@ public class Customer {
     }
 
     public void setAddress(String address) {
-        if (address != null && address.length() <= 100) {
-            this.address = address;
-        } else {
-            throw new IllegalArgumentException("Address must not be null and should be maximum 100 characters");
+        if (address == null || address.trim().isEmpty() || address.length() > 100) {
+            throw new IllegalArgumentException("Address must not be null/empty and should be maximum 100 characters");
         }
+        this.address = address;
     }
 
     public String getContactNumber() {
@@ -99,11 +111,18 @@ public class Customer {
     }
 
     public void setContactNumber(String contactNumber) {
-        if (contactNumber != null && contactNumber.matches("\\d{10}")) {
-            this.contactNumber = contactNumber;
-        } else {
+        if (contactNumber == null || !contactNumber.matches("\\d{10}")) {
             throw new IllegalArgumentException("Contact number must be exactly 10 digits");
         }
+        this.contactNumber = contactNumber;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
@@ -114,6 +133,7 @@ public class Customer {
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", contactNumber='" + contactNumber + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 } 
