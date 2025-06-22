@@ -36,7 +36,7 @@ public class OrderDAO {
                 }
             }
 
-            // Insert into OrderItems table
+            //Insert into OrderItems table
             try (PreparedStatement orderItemPstmt = conn.prepareStatement(orderItemSql)) {
                 for (OrderItem item : order.getItems()) {
                     orderItemPstmt.setInt(1, order.getOrderId());
@@ -48,12 +48,12 @@ public class OrderDAO {
                 orderItemPstmt.executeBatch();
             }
 
-            conn.commit(); // Commit transaction
+            conn.commit(); //Commit transaction
             return order;
 
         } catch (SQLException e) {
             if (conn != null) {
-                conn.rollback(); // Rollback on error
+                conn.rollback(); //Rollback on error
             }
             throw e;
         } finally {
@@ -84,7 +84,7 @@ public class OrderDAO {
                 }
             }
 
-            // For each order, fetch its items
+            //For each order, fetch its items
             for (Order order : orders) {
                 List<OrderItem> items = new ArrayList<>();
                 try (PreparedStatement itemPstmt = conn.prepareStatement(itemSql)) {

@@ -93,6 +93,42 @@ public class ProductDAO {
         return products;
     }
 
+    public List<Product> getAllProductsSortedByName() {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM Products ORDER BY ProductName ASC";
+        try (Connection conn = DatabaseManager.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                products.add(mapRowToProduct(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
+
+    public int replaceProductName(String oldName, String newName) {
+        String sql = "UPDATE Products SET ProductName = ? WHERE ProductName = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newName);
+            pstmt.setString(2, oldName);
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<Product> searchProductsByName(String name) {
+        try {
+            return searchByName(name);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 
     private Product mapRowToProduct(ResultSet rs) throws SQLException {
         return new Product(

@@ -41,8 +41,6 @@ public class Main {
                         updateCustomerDetails();
                         break;
                     case 3:
-                        // This was "Get Customer Order Details", which is not fully implemented yet.
-                        // For now, let's use it to search for a customer.
                         searchCustomer();
                         break;
                     case 4:
